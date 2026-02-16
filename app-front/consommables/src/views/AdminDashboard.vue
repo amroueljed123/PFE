@@ -8,9 +8,9 @@
     >
       <v-list-item class="px-0">
         <template v-slot:prepend>
-          <v-icon size="40" class="mr-3">mdi-shield-admin</v-icon>
+          <img :src="getImageUrl('logo.jpg')" alt="ETAP" style="height:36px;width:auto;object-fit:contain;filter:brightness(0) invert(1);margin-right:12px" />
         </template>
-        <v-list-item-title class="font-weight-bold">Admin Panel</v-list-item-title>
+        <v-list-item-title class="font-weight-bold">ETAP Admin</v-list-item-title>
       </v-list-item>
 
       <v-divider class="my-4"></v-divider>
@@ -53,7 +53,7 @@
 
     <v-app-bar color="primary" dark flat class="admin-bar">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Admin Dashboard</v-toolbar-title>
+      <v-toolbar-title>ETAP Admin Dashboard</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu>
         <template v-slot:activator="{ props }">
@@ -108,6 +108,9 @@ export default {
       localStorage.removeItem('user');
       localStorage.removeItem('isAuthenticated');
       this.$router.push('/');
+    },
+    getImageUrl(name) {
+      return new URL(`../assets/${name}`, import.meta.url).href;
     }
   }
 }

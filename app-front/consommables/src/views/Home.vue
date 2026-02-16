@@ -4,7 +4,7 @@
     <!-- HEADER -->
     <header class="site-header">
       <div class="container header-content">
-        <div class="logo">ETAP</div>
+        <div class="logo"><img :src="getImageUrl('logo.jpg')" alt="ETAP" class="logo-img" /> <span>ETAP</span></div>
 
         <nav class="nav">
           <a href="#">Accueil</a>
@@ -54,41 +54,46 @@
         </div>
       </section>
 
-      <!-- FEATURES -->
+      <!-- PRODUCT CATALOG -->
       <section class="section">
         <div class="container">
           <div class="section-header">
-            <h2>Nos Fonctionnalités</h2>
-            <p>Des outils puissants pour une gestion optimale</p>
+            <h2>Nos Consommables</h2>
+            <p>Découvrez notre gamme complète de produits et équipements</p>
           </div>
 
-          <div class="features-grid">
-            <article 
-              v-for="(feature, index) in features" 
-              :key="index"
-              class="feature-card"
+          <!-- Image-based product cards -->
+          <div class="products-grid">
+            <div 
+              v-for="(product, index) in imageProducts" 
+              :key="'img-' + index"
+              class="product-card image-card"
             >
-              <div class="feature-icon">
-                <i :class="`mdi ${feature.icon}`"></i>
+              <div class="product-image-wrapper">
+                <img :src="getImageUrl(product.image)" :alt="product.name" class="product-image" />
+                <div class="product-overlay">
+                  <span class="product-badge">{{ product.category }}</span>
+                </div>
               </div>
-              <h3>{{ feature.title }}</h3>
-              <p>{{ feature.description }}</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- STATS -->
-      <section class="section light">
-        <div class="container">
-          <div class="section-header">
-            <h2>Nos Chiffres Clés</h2>
+              <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+              </div>
+            </div>
           </div>
 
-          <div class="stats-grid">
-            <div v-for="(stat, index) in stats" :key="index" class="stat-box">
-              <h3>{{ stat.value }}</h3>
-              <p>{{ stat.label }}</p>
+          <!-- Icon-based product cards -->
+          <div class="products-icon-grid">
+            <div 
+              v-for="(product, index) in iconProducts" 
+              :key="'icon-' + index"
+              class="product-card icon-card"
+            >
+              <div class="icon-circle">
+                <i :class="'mdi ' + product.icon"></i>
+              </div>
+              <h3>{{ product.name }}</h3>
+              <p>{{ product.description }}</p>
             </div>
           </div>
         </div>
@@ -109,18 +114,53 @@
 
     <!-- FOOTER -->
     <footer class="site-footer">
-      <div class="container footer-content">
-        <div>
-          <strong>ETAP</strong>
-          <p>Solutions numériques pour l'industrie pétrolière.</p>
+      <div class="container footer-grid">
+        
+        <!-- Brand & Quick Links -->
+        <div class="footer-column brand-col">
+          <div class="footer-brand">
+            <img :src="getImageUrl('logo.jpg')" alt="ETAP" class="footer-logo-img" />
+            <p>Solutions numériques pour l'industrie pétrolière.</p>
+          </div>
+          <div class="footer-links">
+            <a href="#">Confidentialité</a>
+            <a href="#">Conditions</a>
+            <a href="#">Contact</a>
+          </div>
         </div>
 
-        <div class="footer-links">
-          <a href="#">Confidentialité</a>
-          <a href="#">Conditions</a>
-          <a href="#">Contact</a>
+        <!-- Contact Infos -->
+        <div class="footer-column contact-col">
+          <h4>Nos Adresses</h4>
+          
+          <div class="contact-item">
+            <strong>Siège</strong>
+            <p>54, Avenue Mohamed V - 1002 Tunis, Tunisie</p>
+            <p>Tel: (+216) 71 28 50 97</p>
+          </div>
+
+          <div class="contact-item">
+            <strong>Kheireddine Pacha</strong>
+            <p>27 bis, Av. Kheireddine Pacha, Tunis 1002</p>
+            <p>Tel: (+216) 70 24 90 00</p>
+          </div>
+
+          <div class="contact-item">
+            <strong>CRDP</strong>
+            <p>4 Rue des entrepreneurs - 2035 Charguia II Ariana</p>
+            <p>Tel: (+216) 70 83 84 40</p>
+          </div>
         </div>
 
+        <!-- Map -->
+        <div class="footer-column map-col">
+          <h4>Nous trouver (Siège)</h4>
+          <div id="mapContainer" class="map-container"></div>
+        </div>
+
+      </div>
+
+      <div class="container footer-bottom">
         <div class="copyright">
           © 2026 ETAP. Tous droits réservés.
         </div>
@@ -131,12 +171,28 @@
 </template>
 
 <script>
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// Fix for default marker icon in Vite/Webpack
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
 export default {
   name: "Home",
   data() {
     return {
       currentImageIndex: 0,
-      interval: null,
+      imageInterval: null,
+      map: null,
 
       heroImages: [
         "etap_hero_banner_1770414421217.png",
@@ -144,28 +200,54 @@ export default {
         "etap_hero_image_1770414474106.png"
       ],
 
-      features: [
+      imageProducts: [
         {
-          icon: "mdi-shield-check-outline",
-          title: "Sécurité Avancée",
-          description: "Protection complète et conformité internationale."
+          image: 'cartouches.jpg',
+          name: 'Cartouches d\'Encre',
+          category: 'Impression',
+          description: 'Cartouches compatibles pour toutes marques d\'imprimantes jet d\'encre.'
         },
         {
-          icon: "mdi-speedometer",
-          title: "Performance Optimale",
-          description: "Infrastructure haute disponibilité 24/7."
+          image: 'czrtouches1.jpg',
+          name: 'Toners Laser',
+          category: 'Impression',
+          description: 'Toners haute capacité pour imprimantes laser professionnelles.'
         },
         {
-          icon: "mdi-radar",
-          title: "Monitoring Temps Réel",
-          description: "Surveillance continue et alertes intelligentes."
+          image: 'consommables.jpg',
+          name: 'Équipements IT',
+          category: 'Informatique',
+          description: 'Écrans, ordinateurs, câbles et accessoires informatiques.'
+        },
+        {
+          image: 'depot.jpg',
+          name: 'Gestion de Stock',
+          category: 'Logistique',
+          description: 'Solutions de stockage et logistique pour vos consommables.'
         }
       ],
 
-      stats: [
-        { value: "100%", label: "Conformité" },
-        { value: "24/7", label: "Disponibilité" },
-        { value: "10 000+", label: "Utilisateurs" }
+      iconProducts: [
+        {
+          icon: 'mdi-printer',
+          name: 'Papier A4 / A3',
+          description: 'Ramettes de papier haute qualité pour impression professionnelle.'
+        },
+        {
+          icon: 'mdi-usb-flash-drive',
+          name: 'Clés USB & Stockage',
+          description: 'Supports de stockage portables et disques durs externes.'
+        },
+        {
+          icon: 'mdi-cable-data',
+          name: 'Câbles & Connectique',
+          description: 'Câbles réseau, USB, HDMI et adaptateurs professionnels.'
+        },
+        {
+          icon: 'mdi-tools',
+          name: 'Fournitures de Bureau',
+          description: 'Stylos, classeurs, agrafeuses et accessoires de bureau.'
+        }
       ]
     };
   },
@@ -185,11 +267,28 @@ export default {
     },
     getImageUrl(name) {
       return new URL(`../assets/${name}`, import.meta.url).href;
+    },
+    initMap() {
+      // Siège coordinates (54 Ave Mohamed V, Tunis) - Approx
+      const lat = 36.8123;
+      const lng = 10.1658; 
+
+      this.map = L.map('mapContainer').setView([lat, lng], 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(this.map);
+
+      L.marker([lat, lng]).addTo(this.map)
+        .bindPopup('<b>ETAP Siège</b><br>54, Avenue Mohamed V')
+        .openPopup();
     }
   },
 
+
   mounted() {
     this.rotateImages();
+    this.initMap();
   },
 
   beforeUnmount() {
@@ -229,7 +328,7 @@ export default {
 
 .section-header h2 {
   font-size: 2.5rem;
-  color: #003366;
+  color: #1565C0;
   margin-bottom: 10px;
 }
 
@@ -255,9 +354,19 @@ export default {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 700;
   font-size: 1.5rem;
-  color: #003366;
+  color: #1565C0;
+  text-decoration: none;
+}
+
+.logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav a {
@@ -268,7 +377,7 @@ export default {
 }
 
 .nav a:hover {
-  color: #0056b3;
+  color: #1565C0;
 }
 
 .header-actions {
@@ -291,7 +400,7 @@ export default {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 40, 80, 0.65);
+  background: rgba(13, 71, 161, 0.65);
 }
 
 .hero-content {
@@ -324,7 +433,7 @@ export default {
 /* ===== BUTTONS ===== */
 
 .btn-primary {
-  background: #0056b3;
+  background: #1565C0;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -334,13 +443,13 @@ export default {
 }
 
 .btn-primary:hover {
-  background: #003f88;
+  background: #0D47A1;
 }
 
 .btn-outline {
-  border: 2px solid #0056b3;
+  border: 2px solid #1565C0;
   background: transparent;
-  color: #0056b3;
+  color: #1565C0;
   padding: 10px 22px;
   border-radius: 6px;
   font-weight: 600;
@@ -348,7 +457,7 @@ export default {
 }
 
 .btn-outline:hover {
-  background: #0056b3;
+  background: #1565C0;
   color: white;
 }
 
@@ -357,55 +466,168 @@ export default {
   font-size: 1rem;
 }
 
-/* ===== FEATURES ===== */
+/* ===== PRODUCT CATALOG ===== */
 
-.features-grid {
+.products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
-.feature-card {
+.product-card {
   background: white;
-  padding: 40px;
-  border-radius: 10px;
+  border-radius: 14px;
   border: 1px solid #e5e7eb;
-  text-align: center;
-  transition: 0.3s;
+  overflow: hidden;
+  transition: all 0.35s ease;
+  cursor: default;
 }
 
-.feature-card:hover {
-  box-shadow: 0 10px 30px rgba(0, 86, 179, 0.1);
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(21, 101, 192, 0.15);
+  border-color: #bbdefb;
 }
 
-.feature-icon {
-  font-size: 2rem;
-  color: #0056b3;
-  margin-bottom: 20px;
+.product-image-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #f0f4f8;
 }
 
-/* ===== STATS ===== */
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
 
-.stats-grid {
+.product-card:hover .product-image {
+  transform: scale(1.08);
+}
+
+.product-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(13, 71, 161, 0.7) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.product-card:hover .product-overlay {
+  opacity: 1;
+}
+
+.product-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #0D47A1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-radius: 50px;
+}
+
+.product-info {
+  padding: 18px 20px 22px;
+}
+
+.product-info h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.product-info p {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Icon product cards */
+.products-icon-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.icon-card {
   text-align: center;
+  padding: 36px 24px 30px;
 }
 
-.stat-box h3 {
-  font-size: 2.5rem;
-  color: #0056b3;
+.icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  transition: all 0.35s ease;
 }
 
-.stat-box p {
-  color: #6b7280;
+.icon-card:hover .icon-circle {
+  background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+  transform: scale(1.1);
+}
+
+.icon-circle i {
+  font-size: 1.6rem;
+  color: #1565C0;
+  transition: color 0.35s;
+}
+
+.icon-card:hover .icon-circle i {
+  color: white;
+}
+
+.icon-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.icon-card p {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .products-icon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  .products-icon-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ===== CTA ===== */
 
 .cta-section {
-  background: #003366;
+  background: #0D47A1;
   color: white;
   padding: 100px 0;
   text-align: center;
@@ -418,25 +640,84 @@ export default {
 /* ===== FOOTER ===== */
 
 .site-footer {
-  background: #0f172a;
+  background: #0a1929;
   color: #cbd5e1;
-  padding: 60px 0;
+  padding: 60px 0 30px;
 }
 
-.footer-content {
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-column h4 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #1565C0;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.footer-brand {
+  margin-bottom: 20px;
+}
+
+.contact-item {
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.contact-item strong {
+  display: block;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.contact-item p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.footer-links {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .footer-links a {
   color: #cbd5e1;
-  margin-right: 15px;
   text-decoration: none;
+  font-size: 0.9rem;
 }
 
 .footer-links a:hover {
   color: white;
+  text-decoration: underline;
+}
+
+.map-container {
+  height: 250px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
 }
 
 </style>
