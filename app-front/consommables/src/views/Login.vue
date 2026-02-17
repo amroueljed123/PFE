@@ -6,7 +6,15 @@
         <!-- Logo / Brand -->
         <div class="brand-header">
           <div class="brand-logo">
-            <img :src="getImageUrl('logo.jpg')" alt="ETAP" class="logo-img" />
+            <video 
+              autoplay 
+              muted 
+              loop 
+              playsinline 
+              class="logo-video"
+            >
+              <source :src="getImageUrl('grok-video-04efb699-eb08-49c2-86e9-ea9f1961f03c.mp4')" type="video/mp4">
+            </video>
             <span class="brand-name">ETAP</span>
           </div>
           <p class="brand-tagline">Gestion des Consommables</p>
@@ -99,21 +107,25 @@
     <div class="auth-right">
       <div class="image-slideshow">
         <transition name="slide-fade" mode="out-in">
-          <img
-            :src="getImageUrl(showcaseImages[currentImageIndex].file)"
-            :alt="showcaseImages[currentImageIndex].title"
+          <video
             :key="currentImageIndex"
             class="showcase-image"
-          />
+            autoplay
+            muted
+            loop
+            playsinline
+          >
+            <source :src="getImageUrl(showcaseVideos[currentImageIndex].file)" type="video/mp4">
+          </video>
         </transition>
         <div class="image-overlay"></div>
         <div class="showcase-content">
           <div class="showcase-badge">ETAP</div>
-          <h2 class="showcase-title">{{ showcaseImages[currentImageIndex].title }}</h2>
-          <p class="showcase-desc">{{ showcaseImages[currentImageIndex].description }}</p>
+          <h2 class="showcase-title">{{ showcaseVideos[currentImageIndex].title }}</h2>
+          <p class="showcase-desc">{{ showcaseVideos[currentImageIndex].description }}</p>
           <div class="slideshow-dots">
             <button
-              v-for="(img, i) in showcaseImages"
+              v-for="(vid, i) in showcaseVideos"
               :key="i"
               class="dot"
               :class="{ active: i === currentImageIndex }"
@@ -141,11 +153,10 @@ export default {
       passwordErrors: [],
       currentImageIndex: 0,
       imageInterval: null,
-      showcaseImages: [
-        { file: 'depot.jpg', title: 'Entrepôt & Stockage', description: 'Logistique et gestion de votre dépôt' },
-        { file: 'cartouches.jpg', title: 'Cartouches d\'Impression', description: 'Gestion optimisée de vos consommables d\'impression' },
-        { file: 'consommables.jpg', title: 'Équipements IT', description: 'Suivi complet de votre matériel informatique' },
-        { file: 'czrtouches1.jpg', title: 'Toners & Cartouches', description: 'Inventaire en temps réel de vos produits' }
+      showcaseVideos: [
+        { file: 'grok-video-bc7cc5d9-f27b-4873-aa6c-1a2fd47d429c.mp4', title: 'Entrepôt & Stockage', description: 'Logistique et gestion de votre dépôt' },
+        { file: 'grok-video-9ccf203d-b4f3-44a1-bbbb-20c3ab487c8c.mp4', title: 'Cartouches d\'Impression', description: 'Gestion optimisée de vos consommables d\'impression' },
+        { file: '6e163540-5572-4fdc-97de-ceae52f343ad.mp4', title: 'Équipements IT', description: 'Suivi complet de votre matériel informatique' }
       ] 
     }
   },
@@ -215,7 +226,7 @@ export default {
   },
   mounted() {
     this.imageInterval = setInterval(() => {
-      this.currentImageIndex = (this.currentImageIndex + 1) % this.showcaseImages.length;
+      this.currentImageIndex = (this.currentImageIndex + 1) % this.showcaseVideos.length;
     }, 5000);
   },
   beforeUnmount() {
@@ -289,10 +300,11 @@ export default {
   letter-spacing: -0.5px;
 }
 
-.logo-img {
-  height: 38px;
+.logo-video {
+  height: 50px;
   width: auto;
   object-fit: contain;
+  border-radius: 8px;
 }
 
 .brand-tagline {

@@ -4,7 +4,18 @@
     <!-- HEADER -->
     <header class="site-header">
       <div class="container header-content">
-        <div class="logo"><img :src="getImageUrl('logo.jpg')" alt="ETAP" class="logo-img" /> <span>ETAP</span></div>
+        <div class="logo">
+          <video 
+            autoplay 
+            muted 
+            loop 
+            playsinline 
+            class="logo-video"
+          >
+            <source :src="getImageUrl('grok-video-04efb699-eb08-49c2-86e9-ea9f1961f03c.mp4')" type="video/mp4">
+          </video>
+          <span>ETAP</span>
+        </div>
 
         <nav class="nav">
           <a href="#">Accueil</a>
@@ -23,10 +34,22 @@
     <main>
 
       <!-- HERO -->
-      <section 
-        class="hero"
-        :style="{ backgroundImage: `url(${getImageUrl(heroImages[currentImageIndex])})` }"
-      >
+      <section class="hero">
+        <div class="hero-video-container">
+          <video 
+            v-for="(video, index) in heroVideos" 
+            :key="index"
+            class="hero-video"
+            :class="{ active: currentImageIndex === index }"
+            autoplay 
+            muted 
+            loop 
+            playsinline
+          >
+            <source :src="getImageUrl(video)" type="video/mp4">
+          </video>
+        </div>
+
         <div class="hero-overlay"></div>
 
         <div class="container hero-content">
@@ -70,7 +93,15 @@
               class="product-card image-card"
             >
               <div class="product-image-wrapper">
-                <img :src="getImageUrl(product.image)" :alt="product.name" class="product-image" />
+                <video 
+                  autoplay 
+                  muted 
+                  loop 
+                  playsinline 
+                  class="product-image"
+                >
+                  <source :src="getImageUrl(product.video)" type="video/mp4">
+                </video>
                 <div class="product-overlay">
                   <span class="product-badge">{{ product.category }}</span>
                 </div>
@@ -119,7 +150,15 @@
         <!-- Brand & Quick Links -->
         <div class="footer-column brand-col">
           <div class="footer-brand">
-            <img :src="getImageUrl('logo.jpg')" alt="ETAP" class="footer-logo-img" />
+            <video 
+              autoplay 
+              muted 
+              loop 
+              playsinline 
+              class="footer-logo-video"
+            >
+              <source :src="getImageUrl('grok-video-04efb699-eb08-49c2-86e9-ea9f1961f03c.mp4')" type="video/mp4">
+            </video>
             <p>Solutions numériques pour l'industrie pétrolière.</p>
           </div>
           <div class="footer-links">
@@ -194,33 +233,32 @@ export default {
       imageInterval: null,
       map: null,
 
-      heroImages: [
-        "etap_hero_banner_1770414421217.png",
-        "etap_hero_banner_1770414448785.png",
-        "etap_hero_image_1770414474106.png"
+      heroVideos: [
+        "grok-video-58495501-d145-4358-8364-44ce8db1aa21.mp4",
+        "grok-video-37b90edc-269f-40a2-ab4e-b5fe114b6c88.mp4"
       ],
 
       imageProducts: [
         {
-          image: 'cartouches.jpg',
+          video: 'grok-video-bc7cc5d9-f27b-4873-aa6c-1a2fd47d429c.mp4',
           name: 'Cartouches d\'Encre',
           category: 'Impression',
           description: 'Cartouches compatibles pour toutes marques d\'imprimantes jet d\'encre.'
         },
         {
-          image: 'czrtouches1.jpg',
+          video: 'grok-video-9ccf203d-b4f3-44a1-bbbb-20c3ab487c8c.mp4',
           name: 'Toners Laser',
           category: 'Impression',
           description: 'Toners haute capacité pour imprimantes laser professionnelles.'
         },
         {
-          image: 'consommables.jpg',
+          video: '6e163540-5572-4fdc-97de-ceae52f343ad.mp4',
           name: 'Équipements IT',
           category: 'Informatique',
           description: 'Écrans, ordinateurs, câbles et accessoires informatiques.'
         },
         {
-          image: 'depot.jpg',
+          video: 'grok-video-18968f25-225a-4f55-b0fe-b63bb213da04.mp4',
           name: 'Gestion de Stock',
           category: 'Logistique',
           description: 'Solutions de stockage et logistique pour vos consommables.'
@@ -262,7 +300,7 @@ export default {
     rotateImages() {
       this.interval = setInterval(() => {
         this.currentImageIndex =
-          (this.currentImageIndex + 1) % this.heroImages.length;
+          (this.currentImageIndex + 1) % this.heroVideos.length;
       }, 5000);
     },
     getImageUrl(name) {
@@ -363,10 +401,11 @@ export default {
   text-decoration: none;
 }
 
-.logo-img {
-  height: 38px;
+.logo-video {
+  height: 50px;
   width: auto;
   object-fit: contain;
+  border-radius: 8px; /* Optional: adds rounded corners to the video */
 }
 
 .nav a {
@@ -392,9 +431,31 @@ export default {
   height: 85vh;
   display: flex;
   align-items: center;
-  background-size: cover;
-  background-position: center;
-  transition: background-image 1s ease-in-out;
+  overflow: hidden;
+}
+
+.hero-video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.hero-video.active {
+  opacity: 1;
 }
 
 .hero-overlay {
@@ -663,6 +724,14 @@ export default {
 
 .footer-brand {
   margin-bottom: 20px;
+}
+
+.footer-logo-video {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 15px;
+  border-radius: 8px;
 }
 
 .contact-item {
