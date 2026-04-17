@@ -27,7 +27,7 @@
       >
         <template v-slot:item.role="{ item }">
           <v-chip
-            :color="item.role === 'admin' ? 'red' : 'blue'"
+            :color="getRoleColor(item.role)"
             text-color="white"
             small
           >
@@ -101,7 +101,7 @@
             <v-select
               v-model="editingUser.role"
               label="Rôle"
-              :items="['admin', 'user']"
+              :items="['admin', 'gestionnaire', 'responsable', 'directeur', 'user']"
               variant="outlined"
               class="mb-4"
               :rules="[v => !!v || 'Le rôle est requis']"
@@ -185,6 +185,17 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+
+    getRoleColor(role) {
+      const colors = {
+        'admin': 'red',
+        'gestionnaire': 'green',
+        'responsable': 'orange',
+        'directeur': 'purple',
+        'user': 'blue'
+      }
+      return colors[role] || 'grey'
     },
 
     editUser(user) {

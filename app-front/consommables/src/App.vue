@@ -23,4 +23,9 @@ html, body {
 #app {
   min-height: 100vh;
 }
+
+/* Disable scrolling on all sidebar navigation drawers */
+.v-navigation-drawer__content {
+  overflow-y: hidden !important;
+}
 </style>

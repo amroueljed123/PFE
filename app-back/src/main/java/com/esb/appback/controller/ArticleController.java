@@ -3,6 +3,10 @@ package com.esb.appback.controller;
 import com.esb.appback.dto.ArticleStatsDTO;
 import com.esb.appback.model.*;
 import com.esb.appback.service.ArticleService;
+import com.esb.appback.model.Ordinateur;
+import com.esb.appback.model.Moniteur;
+import com.esb.appback.model.Peripherique;
+import com.esb.appback.model.Telephone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/articles")
+@CrossOrigin(origins = "*")
 public class ArticleController {
 
     @Autowired
@@ -59,10 +64,23 @@ public class ArticleController {
     }
 
     @PostMapping
-    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-        System.out.println("DEBUG: Received article of class: " + article.getClass().getName());
-        Article saved = articleService.saveArticle(article);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<?> createArticle(@RequestBody Article article) {
+        try {
+            System.out.println("DEBUG: Received article of class: " + article.getClass().getName());
+            System.out.println("DEBUG: Article type field: " + article.getType());
+            Article saved = articleService.saveArticle(article);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            String msg = e.getMessage() != null && e.getMessage().contains("code_barre")
+                ? "Ce code barre existe déjà. Veuillez en utiliser un autre."
+                : "Violation de contrainte : " + e.getMostSpecificCause().getMessage();
+            System.err.println("ERROR creating article (constraint): " + msg);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
+        } catch (Exception e) {
+            System.err.println("ERROR creating article: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
@@ -136,5 +154,59 @@ public class ArticleController {
     @GetMapping("/imprimantes/marque/{marque}")
     public ResponseEntity<List<ModeleImprimante>> getImprimantesByMarque(@PathVariable String marque) {
         return ResponseEntity.ok(articleService.getImprimantesByMarque(marque));
+    }
+
+    // Ordinateurs endpoints
+    @GetMapping("/ordinateurs/all")
+    public ResponseEntity<List<Ordinateur>> getAllOrdinateurs() {
+        return ResponseEntity.ok(articleService.getAllOrdinateurs());
+    }
+
+    @GetMapping("/ordinateurs/marque/{marque}")
+    public ResponseEntity<List<Ordinateur>> getOrdinateursByMarque(@PathVariable String marque) {
+        return ResponseEntity.ok(articleService.getOrdinateursByMarque(marque));
+    }
+
+    @GetMapping("/ordinateurs/type/{typeOrdinateur}")
+    public ResponseEntity<List<Ordinateur>> getOrdinateursByType(@PathVariable String typeOrdinateur) {
+        return ResponseEntity.ok(articleService.getOrdinateursByType(typeOrdinateur));
+    }
+
+    // Moniteurs endpoints
+    @GetMapping("/moniteurs/all")
+    public ResponseEntity<List<Moniteur>> getAllMoniteurs() {
+        return ResponseEntity.ok(articleService.getAllMoniteurs());
+    }
+
+    @GetMapping("/moniteurs/marque/{marque}")
+    public ResponseEntity<List<Moniteur>> getMoniteursByMarque(@PathVariable String marque) {
+        return ResponseEntity.ok(articleService.getMoniteursByMarque(marque));
+    }
+
+    // Peripheriques endpoints
+    @GetMapping("/peripheriques/all")
+    public ResponseEntity<List<Peripherique>> getAllPeripheriques() {
+        return ResponseEntity.ok(articleService.getAllPeripheriques());
+    }
+
+    @GetMapping("/peripheriques/type/{typePeripherique}")
+    public ResponseEntity<List<Peripherique>> getPeripheriquesByType(@PathVariable String typePeripherique) {
+        return ResponseEntity.ok(articleService.getPeripheriquesByType(typePeripherique));
+    }
+
+    // Telephones endpoints
+    @GetMapping("/telephones/all")
+    public ResponseEntity<List<Telephone>> getAllTelephones() {
+        return ResponseEntity.ok(articleService.getAllTelephones());
+    }
+
+    @GetMapping("/telephones/marque/{marque}")
+    public ResponseEntity<List<Telephone>> getTelephonesByMarque(@PathVariable String marque) {
+        return ResponseEntity.ok(articleService.getTelephonesByMarque(marque));
+    }
+
+    @GetMapping("/custom/{categoryName}")
+    public ResponseEntity<List<Article>> getArticlesByCustomCategory(@PathVariable String categoryName) {
+        return ResponseEntity.ok(articleService.getArticlesByCustomCategory(categoryName));
     }
 }

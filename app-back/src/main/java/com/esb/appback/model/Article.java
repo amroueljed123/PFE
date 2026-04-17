@@ -22,7 +22,12 @@ import java.time.LocalDateTime;
         @JsonSubTypes.Type(value = Chaise.class, name = "CHAISE"),
         @JsonSubTypes.Type(value = EtagereIndustrielle.class, name = "ETAGERE"),
         @JsonSubTypes.Type(value = ModeleImprimante.class, name = "IMPRIMANTE"),
-        @JsonSubTypes.Type(value = Meuble.class, name = "MEUBLE")
+        @JsonSubTypes.Type(value = Meuble.class, name = "MEUBLE"),
+        @JsonSubTypes.Type(value = Ordinateur.class, name = "ORDINATEUR"),
+        @JsonSubTypes.Type(value = Moniteur.class, name = "MONITEUR"),
+        @JsonSubTypes.Type(value = Peripherique.class, name = "PERIPHERIQUE"),
+        @JsonSubTypes.Type(value = Telephone.class, name = "TELEPHONE"),
+        @JsonSubTypes.Type(value = CustomArticle.class, name = "CUSTOM")
 })
 public class Article {
 
@@ -57,6 +62,9 @@ public class Article {
     @Column(nullable = false)
     private String type;
 
+    @Column(name = "sous_categorie")
+    private String sousCategorie;
+
     @Column(columnDefinition = "TEXT")
     private String image;
 
@@ -65,6 +73,31 @@ public class Article {
 
     @Column(columnDefinition = "TEXT")
     private String donnee;
+
+    // New fields for complete asset tracking
+    @Column
+    private String statut; // En stock, En utilisation, En réparation, Hors service
+
+    @Column
+    private String lieu; // Physical location of the item
+
+    @Column
+    private String responsableTechnique; // Technical responsible person
+
+    @Column
+    private String utilisateur; // Person currently using the item
+
+    @Column
+    private String numeroSerie; // Serial number
+
+    @Column
+    private String numeroInventaire; // Inventory number
+
+    @Column
+    private String fabricant; // Manufacturer
+
+    @Column
+    private Integer seuilAlerte; // Low stock alert threshold
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

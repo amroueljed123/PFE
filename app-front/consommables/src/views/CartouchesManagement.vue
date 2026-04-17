@@ -7,6 +7,8 @@
         :items="cartouches"
         :headers="headers"
         :loading="loading"
+        :hasCategoryFields="true"
+        familyFilter="Cartouches"
         @add-item="addCartouche"
         @update-item="updateCartouche"
         @delete-item="deleteCartouche"
@@ -57,11 +59,11 @@ export default {
         { title: 'Nom', key: 'nom' },
         { title: 'Référence', key: 'reference' },
         { title: 'Couleur', key: 'couleur' },
+        { title: 'Fabricant', key: 'fabricant' },
         { title: 'Prix', key: 'prix' },
         { title: 'Quantité', key: 'quantite' },
-        { title: 'Unité', key: 'unite' },
-        { title: 'Famille', key: 'famille' },
-        { title: 'Fournisseur', key: 'fournisseur' },
+        { title: 'Statut', key: 'statut' },
+        { title: 'Lieu', key: 'lieu' },
         { title: 'QR Code', key: 'qrCode' },
         { title: 'Image', key: 'image' },
         { title: 'Actions', key: 'actions', sortable: false }

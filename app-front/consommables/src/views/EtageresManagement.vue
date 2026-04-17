@@ -7,6 +7,8 @@
         :items="etageres"
         :headers="headers"
         :loading="loading"
+        :hasCategoryFields="true"
+        familyFilter="Etageres"
         @add-item="addEtagere"
         @update-item="updateEtagere"
         @delete-item="deleteEtagere"
@@ -62,6 +64,8 @@ export default {
         { title: 'Quantité', key: 'quantite' },
         { title: 'Famille', key: 'famille' },
         { title: 'Fournisseur', key: 'fournisseur' },
+        { title: 'Statut', key: 'statut' },
+        { title: 'Lieu', key: 'lieu' },
         { title: 'QR Code', key: 'qrCode' },
         { title: 'Image', key: 'image' },
         { title: 'Actions', key: 'actions', sortable: false }

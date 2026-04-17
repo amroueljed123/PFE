@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"c:\\\\Users\\\\amrou\\\\OneDrive\\\\Desktop\\\\PFE\\\\app\\\\app-back\\\\src\\\\main\\\\java\\\\com\\\\esb\\\\appback\"\" -type f -name \"*.java \")",
+      "Bash(python:*)"
+    ]
+  }
+}

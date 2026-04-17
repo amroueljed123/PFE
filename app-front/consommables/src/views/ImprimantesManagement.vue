@@ -7,6 +7,8 @@
         :items="imprimantes"
         :headers="headers"
         :loading="loading"
+        :hasCategoryFields="true"
+        familyFilter="Imprimantes"
         @add-item="addImprimante"
         @update-item="updateImprimante"
         @delete-item="deleteImprimante"
@@ -60,6 +62,8 @@ export default {
         { title: 'Unité', key: 'unite' },
         { title: 'Famille', key: 'famille' },
         { title: 'Fournisseur', key: 'fournisseur' },
+        { title: 'Statut', key: 'statut' },
+        { title: 'Lieu', key: 'lieu' },
         { title: 'QR Code', key: 'qrCode' },
         { title: 'Image', key: 'image' },
         { title: 'Actions', key: 'actions', sortable: false }

@@ -7,6 +7,7 @@
         :items="consommables"
         :headers="headers"
         :loading="loading"
+        familyFilter="Consommables"
         @add-item="addConsommable"
         @update-item="updateConsommable"
         @delete-item="deleteConsommable"
@@ -36,12 +37,14 @@ export default {
       headers: [
         { title: 'Code Barre', key: 'codeBarre' },
         { title: 'Nom', key: 'nom' },
-        { title: 'Description', key: 'description' },
+        { title: 'Fabricant', key: 'fabricant' },
         { title: 'Prix', key: 'prix' },
         { title: 'Quantité', key: 'quantite' },
         { title: 'Unité', key: 'unite' },
         { title: 'Famille', key: 'famille' },
         { title: 'Fournisseur', key: 'fournisseur' },
+        { title: 'Statut', key: 'statut' },
+        { title: 'Lieu', key: 'lieu' },
         { title: 'QR Code', key: 'qrCode' },
         { title: 'Image', key: 'image' },
         { title: 'Actions', key: 'actions', sortable: false }

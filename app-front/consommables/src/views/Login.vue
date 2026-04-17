@@ -200,9 +200,15 @@ export default {
           localStorage.setItem('isAuthenticated', 'true');
 
           if (user.role === 'admin') {
-            this.$router.push('/admin/dashboard');
+            this.$router.push('/admin/dashboard/overview');
+          } else if (user.role === 'gestionnaire') {
+            this.$router.push('/gestionnaire/overview');
+          } else if (user.role === 'responsable') {
+            this.$router.push('/responsable/overview');
+          } else if (user.role === 'directeur') {
+            this.$router.push('/directeur/overview');
           } else {
-            this.$router.push('/');
+            this.$router.push('/user');
           }
         } else {
           this.errorMessage = response.message || 'Email ou mot de passe incorrect';

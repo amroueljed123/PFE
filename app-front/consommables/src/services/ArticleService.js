@@ -46,11 +46,16 @@ const ArticleService = {
     return api.delete(`/articles/${id}`)
   },
 
-  // Category-specific operations
+  getArticleStats() {
+    return api.get('/articles/stats')
+  },
+
+  // Consommables
   getAllConsommables() {
     return api.get('/articles/consommables/all')
   },
 
+  // Cartouches
   getAllCartouches() {
     return api.get('/articles/cartouches/all')
   },
@@ -59,36 +64,81 @@ const ArticleService = {
     return api.get(`/articles/cartouches/couleur/${couleur}`)
   },
 
+  // Meubles
   getAllMeubles() {
     return api.get('/articles/meubles/all')
-  },
-
-  getArticleStats() {
-    return api.get('/articles/stats')
   },
 
   getMeublesByMaterial(materiau) {
     return api.get(`/articles/meubles/materiau/${materiau}`)
   },
 
+  // Bureaux
   getAllBureaux() {
     return api.get('/articles/bureaux/all')
   },
 
+  // Chaises
   getAllChaises() {
     return api.get('/articles/chaises/all')
   },
 
+  // Etageres
   getAllEtageres() {
     return api.get('/articles/etageres/all')
   },
 
+  // Imprimantes
   getAllImprimantes() {
     return api.get('/articles/imprimantes/all')
   },
 
   getImprimantesByMarque(marque) {
     return api.get(`/articles/imprimantes/marque/${marque}`)
+  },
+
+  // Ordinateurs
+  getAllOrdinateurs() {
+    return api.get('/articles/ordinateurs/all')
+  },
+
+  getOrdinateursByMarque(marque) {
+    return api.get(`/articles/ordinateurs/marque/${marque}`)
+  },
+
+  getOrdinateursByType(typeOrdinateur) {
+    return api.get(`/articles/ordinateurs/type/${typeOrdinateur}`)
+  },
+
+  // Moniteurs
+  getAllMoniteurs() {
+    return api.get('/articles/moniteurs/all')
+  },
+
+  getMoniteursByMarque(marque) {
+    return api.get(`/articles/moniteurs/marque/${marque}`)
+  },
+
+  // Peripheriques
+  getAllPeripheriques() {
+    return api.get('/articles/peripheriques/all')
+  },
+
+  getPeripheriquesByType(typePeripherique) {
+    return api.get(`/articles/peripheriques/type/${typePeripherique}`)
+  },
+
+  // Telephones
+  getAllTelephones() {
+    return api.get('/articles/telephones/all')
+  },
+
+  getTelephonesByMarque(marque) {
+    return api.get(`/articles/telephones/marque/${marque}`)
+  },
+
+  getArticlesByCustomCategory(categoryName) {
+    return api.get(`/articles/custom/${categoryName}`)
   }
 }
 

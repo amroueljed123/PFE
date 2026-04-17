@@ -7,6 +7,8 @@
         :items="meubles"
         :headers="headers"
         :loading="loading"
+        :hasCategoryFields="true"
+        familyFilter="Meubles"
         @add-item="addMeuble"
         @update-item="updateMeuble"
         @delete-item="deleteMeuble"
@@ -72,6 +74,8 @@ export default {
         { title: 'Unité', key: 'unite' },
         { title: 'Famille', key: 'famille' },
         { title: 'Fournisseur', key: 'fournisseur' },
+        { title: 'Statut', key: 'statut' },
+        { title: 'Lieu', key: 'lieu' },
         { title: 'QR Code', key: 'qrCode' },
         { title: 'Image', key: 'image' },
         { title: 'Actions', key: 'actions', sortable: false }

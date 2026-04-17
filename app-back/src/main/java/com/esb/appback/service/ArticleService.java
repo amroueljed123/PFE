@@ -9,6 +9,10 @@ import java.util.Optional;
 import java.util.Map;
 import java.util.stream.Collectors;
 import com.esb.appback.dto.ArticleStatsDTO;
+import com.esb.appback.repository.OrdinateurRepository;
+import com.esb.appback.repository.MoniteurRepository;
+import com.esb.appback.repository.PeripheriqueRepository;
+import com.esb.appback.repository.TelephoneRepository;
 
 @Service
 public class ArticleService {
@@ -36,6 +40,18 @@ public class ArticleService {
 
     @Autowired
     private ModeleImprimanteRepository imprimanteRepository;
+
+    @Autowired
+    private OrdinateurRepository ordinateurRepository;
+
+    @Autowired
+    private MoniteurRepository moniteurRepository;
+
+    @Autowired
+    private PeripheriqueRepository peripheriqueRepository;
+
+    @Autowired
+    private TelephoneRepository telephoneRepository;
 
     // Generic Article operations
     public List<Article> getAllArticles() {
@@ -142,6 +158,52 @@ public class ArticleService {
         return imprimanteRepository.findByMarque(marque);
     }
 
+    // Ordinateurs
+    public List<Ordinateur> getAllOrdinateurs() {
+        return ordinateurRepository.findAll();
+    }
+
+    public List<Ordinateur> getOrdinateursByMarque(String marque) {
+        return ordinateurRepository.findByMarque(marque);
+    }
+
+    public List<Ordinateur> getOrdinateursByType(String typeOrdinateur) {
+        return ordinateurRepository.findByTypeOrdinateur(typeOrdinateur);
+    }
+
+    // Moniteurs
+    public List<Moniteur> getAllMoniteurs() {
+        return moniteurRepository.findAll();
+    }
+
+    public List<Moniteur> getMoniteursByMarque(String marque) {
+        return moniteurRepository.findByMarque(marque);
+    }
+
+    // Peripheriques
+    public List<Peripherique> getAllPeripheriques() {
+        return peripheriqueRepository.findAll();
+    }
+
+    public List<Peripherique> getPeripheriquesByType(String typePeripherique) {
+        return peripheriqueRepository.findByTypePeripherique(typePeripherique);
+    }
+
+    // Telephones
+    public List<Telephone> getAllTelephones() {
+        return telephoneRepository.findAll();
+    }
+
+    public List<Telephone> getTelephonesByMarque(String marque) {
+        return telephoneRepository.findByMarque(marque);
+    }
+
+    public List<Article> getArticlesByCustomCategory(String customCategoryName) {
+        return articleRepository.findAll().stream()
+                .filter(a -> a instanceof CustomArticle && ((CustomArticle) a).getCustomCategoryName().equals(customCategoryName))
+                .collect(Collectors.toList());
+    }
+
     public ArticleStatsDTO getArticleStats() {
         List<Article> articles = articleRepository.findAll();
 
@@ -160,7 +222,9 @@ public class ArticleService {
                 .collect(Collectors.groupingBy(Article::getFamille, Collectors.counting()));
 
         long lowStockCount = articles.stream()
-                .filter(a -> a.getQuantite() != null && a.getQuantite() < 5)
+                .filter(a -> a.getQuantite() != null && a.getSeuilAlerte() != null
+                        ? a.getQuantite() <= a.getSeuilAlerte()
+                        : a.getQuantite() != null && a.getQuantite() < 5)
                 .count();
 
         return ArticleStatsDTO.builder()

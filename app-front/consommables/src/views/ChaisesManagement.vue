@@ -7,6 +7,8 @@
         :items="chaises"
         :headers="headers"
         :loading="loading"
+        :hasCategoryFields="true"
+        familyFilter="Chaises"
         @add-item="addChaise"
         @update-item="updateChaise"
         @delete-item="deleteChaise"
@@ -59,6 +61,8 @@ export default {
         { title: 'Quantité', key: 'quantite' },
         { title: 'Famille', key: 'famille' },
         { title: 'Fournisseur', key: 'fournisseur' },
+        { title: 'Statut', key: 'statut' },
+        { title: 'Lieu', key: 'lieu' },
         { title: 'QR Code', key: 'qrCode' },
         { title: 'Image', key: 'image' },
         { title: 'Actions', key: 'actions', sortable: false }
